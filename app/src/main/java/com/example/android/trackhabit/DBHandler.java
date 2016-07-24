@@ -44,7 +44,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Getting one medication
-    public Medication getMedication(int id) {
+    public String getMedication(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(MedContract.MedEntry.TABLE_MEDS,
                 new String[]{
@@ -56,10 +56,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        Medication contact = new Medication(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2));
-    // return medication
-        return contact;
+        assert cursor != null;
+        // return medication
+        return cursor.getString(0) + cursor.getString(1) + cursor.getString(2);
     }
 
     // Getting All Medications
@@ -76,11 +75,11 @@ public class DBHandler extends SQLiteOpenHelper {
                 medication.setId(Integer.parseInt(cursor.getString(0)));
                 medication.setType(cursor.getString(1));
                 medication.setDosage(cursor.getString(2));
-    // Adding contact to list
+
                 medicationList.add(medication);
             } while (cursor.moveToNext());
         }
-    // return contact list
+
         return medicationList;
     }
 

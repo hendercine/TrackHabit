@@ -32,9 +32,10 @@ public class MainActivity extends AppCompatActivity {
             // Writing medications to log
             Log.d("Medication: : ", log);
         }
+
         //Get one medication
-        Medication single = db.getMedication(4);
-        Log.d("Single Medication: ", String.valueOf(single));
+        String single = db.getMedication(4);
+        Log.d("Single Medication: ", single);
 
         //Get medication count
         int count = db.getMedicationsCount();
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         int update = db.updateMedication(new Medication(4, "Diphenhydramine", "25mg"));
         Log.d("Updated medication", String.valueOf(update));
 
-        //Delete medication
+        //Delete one medication
         Medication removeMed = new Medication(2, "Vitamin D", "200mg");
         db.deleteMedication(removeMed);
         medications = db.getAllMedications();
