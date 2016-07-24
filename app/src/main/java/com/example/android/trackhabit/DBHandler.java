@@ -11,34 +11,23 @@ import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-    // Database Name
-    private static final String DATABASE_NAME = "medsInfo";
-    // Table name
-    private static final String TABLE_MEDS = "meds";
-    // Medications Table Columns names
-    private static final String KEY_ID = "id";
-    private static final String KEY_TYPE = "type";
-    private static final String KEY_DOSAGE = "dosage";
-
     public DBHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, "medsinfo", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_MEDS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TYPE + " TEXT,"
-                + KEY_DOSAGE + " TEXT" + ")";
+        String CREATE_TABLE = "CREATE TABLE " + MedContract.MedEntry.TABLE_MEDS+ "("
+                + MedContract.MedEntry.KEY_ID + " INTEGER PRIMARY KEY," + MedContract.MedEntry.KEY_TYPE + " TEXT,"
+                + MedContract.MedEntry.KEY_DOSAGE + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-// Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDS);
-// Creating tables again
+    // Drop older table if existed
+        db.execSQL("DROP TABLE IF EXISTS " + MedContract.MedEntry.TABLE_MEDS);
+    // Creating tables again
         onCreate(db);
     }
 
@@ -46,74 +35,75 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_TYPE, medication.getType()); // Medication Name
-        values.put(KEY_DOSAGE, medication.getDosage()); // Dosage amount
-// Inserting Row
-        db.insert(TABLE_MEDS, null, values);
+        values.put(MedContract.MedEntry.KEY_TYPE, medication.getType()); // Medication Name
+        values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage()); // Dosage amount
+    // Inserting Row
+        db.insert(MedContract.MedEntry.TABLE_MEDS, null, values);
         db.close(); // Closing database connection
     }
 
     // Getting one medication
     public Medication getMedication(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_MEDS, new String[]{KEY_ID,
-                        KEY_TYPE, KEY_DOSAGE}, KEY_ID + "=?",
+        Cursor cursor = db.query(MedContract.MedEntry.TABLE_MEDS, new String[]{MedContract.MedEntry.KEY_ID,
+                        MedContract.MedEntry.KEY_TYPE, MedContract.MedEntry.KEY_DOSAGE}, MedContract.MedEntry.KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
         Medication contact = new Medication(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1), cursor.getString(2));
-// return medication
+    // return medication
         return contact;
     }
 
     // Getting All Medications
     public List<Medication> getAllMedications() {
         List<Medication> medicationList = new ArrayList<Medication>();
-// Select All Query
-        String selectQuery = "SELECT * FROM " + TABLE_MEDS;
+    // Select All Query
+        String selectQuery = "SELECT * FROM " + MedContract.MedEntry.TABLE_MEDS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-// looping through all rows and adding to list
+    // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 Medication medication = new Medication();
                 medication.setId(Integer.parseInt(cursor.getString(0)));
                 medication.setType(cursor.getString(1));
                 medication.setDosage(cursor.getString(2));
-// Adding contact to list
+    // Adding contact to list
                 medicationList.add(medication);
             } while (cursor.moveToNext());
         }
-// return contact list
+    // return contact list
         return medicationList;
     }
 
     // Getting medications Count
     public int getMedicationsCount() {
-        String countQuery = "SELECT * FROM " + TABLE_MEDS;
+        String countQuery = "SELECT * FROM " + MedContract.MedEntry.TABLE_MEDS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
         cursor.close();
-// return count
-        return cursor.getCount();
+    // return count
+        return count;
     }
 
     // Updating a medication
     public int updateMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_TYPE, medication.getType());
-        values.put(KEY_DOSAGE, medication.getDosage());
-// updating row
-        return db.update(TABLE_MEDS, values, KEY_ID + " = ?",
+        values.put(MedContract.MedEntry.KEY_TYPE, medication.getType());
+        values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage());
+    // updating row
+        return db.update(MedContract.MedEntry.TABLE_MEDS, values, MedContract.MedEntry.KEY_ID + " = ?",
                 new String[]{String.valueOf(medication.getId())});
     }
 
     // Deleting a medication
     public void deleteMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MEDS, KEY_ID + " = ?",
+        db.delete(MedContract.MedEntry.TABLE_MEDS, MedContract.MedEntry.KEY_ID + " = ?",
                 new String[]{String.valueOf(medication.getId())});
         db.close();
     }
