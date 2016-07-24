@@ -18,7 +18,8 @@ public class DBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + MedContract.MedEntry.TABLE_MEDS+ "("
-                + MedContract.MedEntry.KEY_ID + " INTEGER PRIMARY KEY," + MedContract.MedEntry.KEY_TYPE + " TEXT,"
+                + MedContract.MedEntry.KEY_ID + " INTEGER PRIMARY KEY,"
+                + MedContract.MedEntry.KEY_TYPE + " TEXT,"
                 + MedContract.MedEntry.KEY_DOSAGE + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
@@ -35,8 +36,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(MedContract.MedEntry.KEY_TYPE, medication.getType()); // Medication Name
-        values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage()); // Dosage amount
+        values.put(MedContract.MedEntry.KEY_TYPE, medication.getType());
+        values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage());
     // Inserting Row
         db.insert(MedContract.MedEntry.TABLE_MEDS, null, values);
         db.close(); // Closing database connection
@@ -45,8 +46,13 @@ public class DBHandler extends SQLiteOpenHelper {
     // Getting one medication
     public Medication getMedication(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(MedContract.MedEntry.TABLE_MEDS, new String[]{MedContract.MedEntry.KEY_ID,
-                        MedContract.MedEntry.KEY_TYPE, MedContract.MedEntry.KEY_DOSAGE}, MedContract.MedEntry.KEY_ID + "=?",
+        Cursor cursor = db.query(MedContract.MedEntry.TABLE_MEDS,
+                new String[]{
+                        MedContract.MedEntry.KEY_ID,
+                        MedContract.MedEntry.KEY_TYPE,
+                        MedContract.MedEntry.KEY_DOSAGE
+                },
+                MedContract.MedEntry.KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -96,7 +102,9 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(MedContract.MedEntry.KEY_TYPE, medication.getType());
         values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage());
     // updating row
-        return db.update(MedContract.MedEntry.TABLE_MEDS, values, MedContract.MedEntry.KEY_ID + " = ?",
+        return db.update(MedContract.MedEntry.TABLE_MEDS,
+                values,
+                MedContract.MedEntry.KEY_ID + " = ?",
                 new String[]{String.valueOf(medication.getId())});
     }
 
