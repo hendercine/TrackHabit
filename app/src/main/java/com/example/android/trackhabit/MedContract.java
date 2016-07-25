@@ -3,6 +3,8 @@ package com.example.android.trackhabit;
 import android.provider.BaseColumns;
 
 public class MedContract {
+    //Database Patg
+    public static final String DATABASE_PATH = "/data/data/com.example.android.trackhabit/databases/";
     // Database Name
     public static final String DATABASE_NAME = "medsInfo";
     // Database Version

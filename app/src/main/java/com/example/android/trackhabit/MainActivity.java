@@ -1,14 +1,19 @@
 package com.example.android.trackhabit;
 
+import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,5 +80,29 @@ public class MainActivity extends AppCompatActivity {
         //Delete all medications
         Log.d("Deleting:", "Deleting all medications...");
         db.deleteAll();
+
+        // Reinserting Medication/Rows
+        Log.d("Insert: ", "Inserting ..");
+        db.addMedication(new Medication(1, "Vitamin A", "500mg"));
+        db.addMedication(new Medication(2, "Vitamin E", "200mg"));
+        db.addMedication(new Medication(3, "Aspirin", "200mg"));
+        db.addMedication(new Medication(4, "Valium", "5mg"));
+
+        // Reading all medications
+        Log.d("Reading: ", "Reading all medications..");
+        medications = db.getAllMedications();
+
+        for (Medication medication : medications) {
+            String log =
+                    "Id: " + medication.getId()
+                            + " ,Type: " + medication.getType()
+                            + " ,Dosage: " + medication.getDosage();
+
+            // Writing medications to log
+            Log.d("Medication: : ", log);
+        }
+
+        SQLiteDatabase.deleteDatabase(new File(MedContract.DATABASE_PATH + MedContract.DATABASE_NAME));
+
     }
 }

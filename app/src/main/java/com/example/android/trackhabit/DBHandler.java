@@ -1,18 +1,25 @@
 package com.example.android.trackhabit;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DBHandler extends SQLiteOpenHelper {
 
+    private static Context myContext;
+
     public DBHandler(Context context) {
-        super(context, "medsinfo", null, 1);
+        super(context, MedContract.DATABASE_NAME, null, MedContract.DATABASE_VERSION);
+        myContext = context;
     }
 
     @Override
@@ -31,6 +38,15 @@ public class DBHandler extends SQLiteOpenHelper {
         // Creating tables again
         onCreate(db);
     }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void deleteDatabase(File file) {
+        return;
+    }
+
+
+
+
 
     // Adding new medication
     public void addMedication(Medication medication) {
@@ -120,4 +136,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("delete  from " + MedContract.MedEntry.TABLE_MEDS);
         db.close();
     }
+
+    //Delete Database
+
 }
