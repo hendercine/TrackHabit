@@ -1,5 +1,6 @@
 package com.example.android.trackhabit;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,11 +38,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Get one medication
-        String single = db.getMedication(4).toString();
+        Cursor single = db.getMedication(4);
+        single.moveToFirst();
         String logSingle =
-                "Id: " + single.indexOf("0")
-                        + ", Type: " + single.indexOf("1")
-                        + ", Dosage: " + single.indexOf("2");
+                "Id: " + single.getInt(0)
+                        + ", Type: " + single.getString(1)
+                        + ", Dosage: " + single.getString(2);
         Log.d("Single Medication: ", logSingle);
 
         //Get medication count
@@ -49,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Medication count: ", String.valueOf(count));
 
         //Update medication
-        int update = db.updateMedication(new Medication(4, "Diphenhydramine", "25mg"));
-        String updateStr = String.valueOf(db.getMedication(update));
+        db.updateMedication(new Medication(4, "Diphenhydramine", "25mg"));
+        Cursor updateStr = db.getMedication(4);
         String updateLog =
-                "Id: " + updateStr.indexOf("0")
-                        + ", Type: " + updateStr.indexOf("1")
-                        + ", Dosage: " + updateStr.indexOf("2");
+                "Id: " + updateStr.getInt(0)
+                        + ", Type: " + updateStr.getString(1)
+                        + ", Dosage: " + updateStr.getString(2);
         Log.d("Updated medication", updateLog);
 
         //Delete one medication
