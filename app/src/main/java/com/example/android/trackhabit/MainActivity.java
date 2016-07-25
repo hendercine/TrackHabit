@@ -2,24 +2,22 @@ package com.example.android.trackhabit;
 
 import android.annotation.TargetApi;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    DBHandler db = new DBHandler(this);
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        DBHandler db = new DBHandler(this);
 
         // Inserting Medication/Rows
         Log.d("Insert: ", "Inserting ..");
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         db.deleteAll();
 
         // Reinserting Medication/Rows
-        Log.d("Insert: ", "Inserting ..");
+        Log.d("Insert new meds: ", "Inserting new items...");
         db.addMedication(new Medication(1, "Vitamin A", "500mg"));
         db.addMedication(new Medication(2, "Vitamin E", "200mg"));
         db.addMedication(new Medication(3, "Aspirin", "200mg"));
@@ -102,7 +100,13 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Medication: : ", log);
         }
 
-        SQLiteDatabase.deleteDatabase(new File(MedContract.DATABASE_PATH + MedContract.DATABASE_NAME));
+    }
 
+    @Override
+    protected void onDestroy() {
+        //Delete entire Database
+        Log.d("Deleting: ", "Deleting entire Database");
+        db.deleteDB();
+        super.onDestroy();
     }
 }

@@ -12,14 +12,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.android.trackhabit.MedContract.DATABASE_NAME;
+
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static Context myContext;
 
     public DBHandler(Context context) {
-        super(context, MedContract.DATABASE_NAME, null, MedContract.DATABASE_VERSION);
-        myContext = context;
+        super(context, DATABASE_NAME, null, MedContract.DATABASE_VERSION);
+//        context.deleteDatabase(MedContract.DATABASE_NAME);
     }
 
     @Override
@@ -40,13 +41,14 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void deleteDatabase(File file) {
-        return;
+    public boolean deleteDB() {
+        boolean b;
+        if (SQLiteDatabase.deleteDatabase((new File(MedContract.DATABASE_PATH + DATABASE_NAME)))) {
+            b = true;
+        }
+        else b = false;
+        return b;
     }
-
-
-
-
 
     // Adding new medication
     public void addMedication(Medication medication) {
