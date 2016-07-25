@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         //Delete entire Database
         Log.d("Deleting: ", "Deleting entire Database");
-        db.deleteDB();
+        db.close();
+        db.deleteDatabase();
         super.onDestroy();
     }
 }

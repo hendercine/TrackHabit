@@ -1,14 +1,11 @@
 package com.example.android.trackhabit;
 
-import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +14,11 @@ import static com.example.android.trackhabit.MedContract.DATABASE_NAME;
 
 public class DBHandler extends SQLiteOpenHelper {
 
+    private Context mContext;
 
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, MedContract.DATABASE_VERSION);
-//        context.deleteDatabase(MedContract.DATABASE_NAME);
+        mContext = context;
     }
 
     @Override
@@ -40,14 +38,8 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean deleteDB() {
-        boolean b;
-        if (SQLiteDatabase.deleteDatabase((new File(MedContract.DATABASE_PATH + DATABASE_NAME)))) {
-            b = true;
-        }
-        else b = false;
-        return b;
+    public void deleteDatabase() {
+        mContext.deleteDatabase(DATABASE_NAME);
     }
 
     // Adding new medication
