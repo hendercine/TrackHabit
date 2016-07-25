@@ -17,7 +17,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + MedContract.MedEntry.TABLE_MEDS+ "("
+        String CREATE_TABLE = "CREATE TABLE " + MedContract.MedEntry.TABLE_MEDS + "("
                 + MedContract.MedEntry.KEY_ID + " INTEGER PRIMARY KEY,"
                 + MedContract.MedEntry.KEY_TYPE + " TEXT,"
                 + MedContract.MedEntry.KEY_DOSAGE + " TEXT" + ")";
@@ -26,9 +26,9 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    // Drop older table if existed
+        // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + MedContract.MedEntry.TABLE_MEDS);
-    // Creating tables again
+        // Creating tables again
         onCreate(db);
     }
 
@@ -38,13 +38,13 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(MedContract.MedEntry.KEY_TYPE, medication.getType());
         values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage());
-    // Inserting Row
+        // Inserting Row
         db.insert(MedContract.MedEntry.TABLE_MEDS, null, values);
         db.close(); // Closing database connection
     }
 
     // Getting one medication
-    public String getMedication(int id) {
+    public Cursor getMedication(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(MedContract.MedEntry.TABLE_MEDS,
                 new String[]{
@@ -56,19 +56,17 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        assert cursor != null;
-        // return medication
-        return cursor.getString(0) + cursor.getString(1) + cursor.getString(2);
+        return cursor;
     }
 
     // Getting All Medications
     public List<Medication> getAllMedications() {
         List<Medication> medicationList = new ArrayList<Medication>();
-    // Select All Query
+        // Select All Query
         String selectQuery = "SELECT * FROM " + MedContract.MedEntry.TABLE_MEDS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-    // looping through all rows and adding to list
+        // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 Medication medication = new Medication();
@@ -90,7 +88,7 @@ public class DBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
-    // return count
+        // return count
         return count;
     }
 
@@ -100,7 +98,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(MedContract.MedEntry.KEY_TYPE, medication.getType());
         values.put(MedContract.MedEntry.KEY_DOSAGE, medication.getDosage());
-    // updating row
+        // updating row
         return db.update(MedContract.MedEntry.TABLE_MEDS,
                 values,
                 MedContract.MedEntry.KEY_ID + " = ?",
@@ -112,6 +110,14 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(MedContract.MedEntry.TABLE_MEDS, MedContract.MedEntry.KEY_ID + " = ?",
                 new String[]{String.valueOf(medication.getId())});
+        db.close();
+    }
+
+    //Delete all medications
+    public void deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(MedContract.MedEntry.TABLE_MEDS, null, null);
+        db.execSQL("delete  from " + MedContract.MedEntry.TABLE_MEDS);
         db.close();
     }
 }

@@ -27,15 +27,22 @@ public class MainActivity extends AppCompatActivity {
         List<Medication> medications = db.getAllMedications();
 
         for (Medication medication : medications) {
-            String log = "Id: " + medication.getId() + " ,Type: " + medication.getType() + " ,Dosage: " + medication.getDosage();
+            String log =
+                    "Id: " + medication.getId()
+                            + " ,Type: " + medication.getType()
+                            + " ,Dosage: " + medication.getDosage();
 
             // Writing medications to log
             Log.d("Medication: : ", log);
         }
 
         //Get one medication
-        String single = db.getMedication(4);
-        Log.d("Single Medication: ", single);
+        String single = db.getMedication(4).toString();
+        String logSingle =
+                "Id: " + single.indexOf("0")
+                        + ", Type: " + single.indexOf("1")
+                        + ", Dosage: " + single.indexOf("2");
+        Log.d("Single Medication: ", logSingle);
 
         //Get medication count
         int count = db.getMedicationsCount();
@@ -43,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Update medication
         int update = db.updateMedication(new Medication(4, "Diphenhydramine", "25mg"));
-        Log.d("Updated medication", String.valueOf(update));
+        String updateStr = String.valueOf(db.getMedication(update));
+        String updateLog =
+                "Id: " + updateStr.indexOf("0")
+                        + ", Type: " + updateStr.indexOf("1")
+                        + ", Dosage: " + updateStr.indexOf("2");
+        Log.d("Updated medication", updateLog);
 
         //Delete one medication
         Medication removeMed = new Medication(2, "Vitamin D", "200mg");
@@ -51,9 +63,15 @@ public class MainActivity extends AppCompatActivity {
         medications = db.getAllMedications();
 
         for (Medication medication : medications) {
-            String log = "Id: " + medication.getId() + " ,Type: " + medication.getType() + " ,Dosage: " + medication.getDosage();
-
+            String log =
+                    "Id: " + medication.getId()
+                            + " ,Type: " + medication.getType()
+                            + " ,Dosage: " + medication.getDosage();
             Log.d("New medication list: ", log);
         }
+
+        //Delete all medications
+        Log.d("Deleting:", "Deleting all medications...");
+        db.deleteAll();
     }
 }
